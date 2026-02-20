@@ -1,12 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import Home from "./pages/Home";
+import Events from "./pages/Events";
 import CreateEvent from "./pages/CreateEvent";
 import EditEvent from "./pages/EditEvent";
 import EventDetails from "./pages/EventDetails";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
 import Toast from "./components/Toast";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import { detectBackendStatus } from "./services/backendCompatibility";
 
 function ProtectedRoute({
@@ -21,13 +24,28 @@ function ProtectedRoute({
   }
   if (requireAdmin && userRole !== "admin") {
     onUnauthorized?.();
-    return <Navigate to="/" replace />;
+    return <Navigate to="/events" replace />;
   }
   return children;
 }
 
 function App() {
   const backendCheckStartedRef = useRef(false);
+
+ // 👇 ADD DARK MODE HERE
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   // Load events from localStorage on initial render
   const [events, setEvents] = useState(() => {
@@ -91,6 +109,33 @@ function App() {
     showToast(`Welcome, ${user.username}!`, "success");
   };
 
+useEffect(() => {
+  if (!isLoggedIn) return;
+
+  const now = new Date();
+
+  const upcomingEvents = events.filter((event) => {
+    if (!event.date) return false;
+
+    const eventDateTime = new Date(
+      `${event.date}T${event.time || "00:00"}`
+    );
+
+    return eventDateTime > now;
+  });
+
+  if (upcomingEvents.length > 0) {
+    const timer = setTimeout(() => {
+      showToast(
+        `🔔 You have ${upcomingEvents.length} upcoming event(s)!`,
+        "info"
+      );
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }
+}, [events, isLoggedIn]);
+  
   // Handle logout
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -103,8 +148,9 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="app-shell min-h-screen font-sans text-gray-900">
-        <Navbar isLoggedIn={isLoggedIn} currentUser={currentUser} userRole={userRole} onLogout={handleLogout} />
+      <div className="app-shell min-h-screen font-sans text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <Navbar isLoggedIn={isLoggedIn} currentUser={currentUser} userRole={userRole} onLogout={handleLogout} darkMode={darkMode}
+  setDarkMode={setDarkMode}/>
         <main className="container mx-auto px-4 py-6 relative">
           <Routes>
             <Route path="/login" element={<Login onLogin={handleLogin} />} />
@@ -120,6 +166,23 @@ function App() {
                 />
               }
             />
+            <Route path="/events" element={
+                <Events
+                  events={events}
+                  setEvents={setEvents}
+                  currentUser={currentUser}
+                  userRole={userRole}
+                  showToast={showToast}
+                />
+              }
+            />
+
+
+          < Route path="/about" element={<About />} />
+
+          <Route path="/contact" element={<Contact />} />
+
+            
             <Route path="/create" element={
               <ProtectedRoute
                 isLoggedIn={isLoggedIn}
