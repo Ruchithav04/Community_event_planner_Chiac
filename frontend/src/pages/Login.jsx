@@ -53,14 +53,13 @@ function Login({ onLogin }) {
     };
 
     onLogin(user);
-    navigate("/");
+    navigate("/events");
   };
 
   const inputClasses = (fieldName) => `
-    w-full px-4 py-2.5 border rounded-xl bg-white/90 focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 transition-all outline-none
-    ${errors[fieldName] ? "border-red-500 bg-red-50/90" : "border-slate-300/80 hover:border-cyan-400/60"}
-  `;
-
+  w-full px-4 py-2.5 border rounded-xl bg-white text-black placeholder-gray-500 focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 transition-all outline-none
+  ${errors[fieldName] ? "border-red-500 bg-red-50" : "border-slate-300 hover:border-cyan-400/60"}
+`;
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full">

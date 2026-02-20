@@ -60,8 +60,13 @@ function CreateEvent({ setEvents, currentUser, userRole, showToast }) {
     };
 
     setEvents(prevEvents => [...prevEvents, newEvent]);
-    showToast?.("Event created successfully!", "success");
-    navigate("/");
+
+    showToast?.(
+      `🎉 Event "${newEvent.title}" created!\n📅 ${newEvent.date} at ${newEvent.time}`,
+     "success"
+    );
+
+navigate("/");
   };
 
   return (

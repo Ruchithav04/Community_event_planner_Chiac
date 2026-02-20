@@ -1,9 +1,8 @@
 function EventForm({ formData, handleChange, handleSubmit, errors = {}, submitLabel = 'Save Event', heading }) {
   const inputClasses = (fieldName) => `
-    w-full px-4 py-2.5 border rounded-xl bg-white/90 shadow-sm focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 transition-all outline-none
-    ${errors[fieldName] ? "border-red-500 bg-red-50/90" : "border-slate-300/80 hover:border-cyan-400/60"}
-  `;
-
+  w-full px-4 py-2.5 border rounded-xl bg-white text-black placeholder-gray-500 shadow-sm focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400 transition-all outline-none
+  ${errors[fieldName] ? "border-red-500 bg-red-50" : "border-slate-300 hover:border-cyan-400/60"}
+`;
   const labelClasses = "block text-xs font-semibold tracking-wide uppercase text-slate-600 mb-1.5";
   const errorClasses = "text-red-500 text-xs mt-1";
 
